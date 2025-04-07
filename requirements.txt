@@ -1,0 +1,5 @@
+flask
+python-dotenev
+google-generativeai
+waitress
+unicorn
