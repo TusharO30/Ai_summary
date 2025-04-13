@@ -1,13 +1,14 @@
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import fitz  # PyMuPDF
-import pytesseract
 from PIL import Image
 import base64
 import io
 import google.generativeai as genai
 import os
 from dotenv import load_dotenv
+import pytesseract
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 load_dotenv()
 app = Flask(__name__)
