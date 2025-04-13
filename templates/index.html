@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Research Paper Summarizer</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-   
-</head>
-<style>
-    /* Reset and Base Styles */
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Research Paper Summarizer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <style>
+    
 * {
     margin: 0;
     padding: 0;
@@ -308,309 +306,271 @@ body {
     background: linear-gradient(45deg, #f87171, #fca5a5);
     color: #1e293b;
 }
-</style>
+
+    #summaryLength {
+        margin-right: 10px;
+        background: #fff;
+        color: #1e293b;
+        font-weight: 500;
+        border: 1px solid #93c5fd;
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-size: 0.95rem;
+    }
+  </style>
+</head>
 <body>
-    <div class="container">
-        <h1 class="title">Research Paper Summarizer</h1>
-        
-        <div class="grid-container">
-            <!-- Input Section -->
-            <div class="input-section">
-                <div class="input-mode">
-                    <label>
-                        <input type="radio" name="inputType" value="text" checked> Enter Text
-                    </label>
-                    <label>
-                        <input type="radio" name="inputType" value="pdf"> Upload PDF
-                    </label>
-                </div>
-
-                <textarea id="inputText" class="text-area" 
-                          placeholder="Paste research text here..."></textarea>
-                
-                <div class="upload-section">
-                    <label for="pdfUpload" class="upload-label">
-                        <i class="fas fa-file-pdf"></i> Upload Research Paper (PDF)
-                        <input type="file" id="pdfUpload" accept=".pdf" hidden>
-                    </label>
-                    <div id="pdfInfo" class="pdf-info"></div>
-                </div>
-
-                <div class="input-footer">
-                    <div>
-                        <span id="wordCount" class="word-count">0 words</span>
-                        <span id="charCount" class="char-count">0 characters</span>
-                    </div>
-                    <button id="summarizeBtn" class="summarize-button">
-                        <i class="fas fa-magic"></i> Summarize
-                    </button>
-                </div>
-                <div id="inputError" class="error-message"></div>
-            </div>
-            
-            <!-- Output Section -->
-            <div class="output-section">
-                <div class="output-header">
-                    <h2 class="output-title"><i class="fas fa-file-alt"></i> Summary</h2>
-                    <div id="summaryStatus" class="status-message"></div>
-                </div>
-                <div id="summaryOutput" class="summary-output">
-                    <p class="placeholder">Summary will appear here...</p>
-                </div>
-                <div class="output-footer">
-                    <button id="copyBtn" class="action-button" disabled>
-                        <i class="fas fa-copy"></i> Copy
-                    </button>
-                    <button id="downloadBtn" class="action-button" disabled>
-                        <i class="fas fa-download"></i> Download
-                    </button>
-                </div>
-            </div>
+  <div class="container">
+    <h1 class="title">Research Paper Summarizer</h1>
+    <div class="grid-container">
+      <!-- Input Section -->
+      <div class="input-section">
+        <div class="input-mode">
+          <label>
+            <input type="radio" name="inputType" value="text" checked> Enter Text
+          </label>
+          <label>
+            <input type="radio" name="inputType" value="pdf"> Upload PDF
+          </label>
         </div>
+
+        <textarea id="inputText" class="text-area" placeholder="Paste research text here..."></textarea>
+
+        <div class="upload-section">
+          <label for="pdfUpload" class="upload-label">
+            <i class="fas fa-file-pdf"></i> Upload Research Paper (PDF)
+            <input type="file" id="pdfUpload" accept=".pdf" hidden />
+          </label>
+          <div id="pdfInfo" class="pdf-info"></div>
+        </div>
+
+        <div class="input-footer">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <select id="summaryLength" title="Select summary length">
+              <option value="short">🔹 Short</option>
+              <option value="medium" selected>🔸 Medium</option>
+              <option value="long">🔶 Long</option>
+            </select>
+            <div>
+              <span id="wordCount" class="word-count">0 words</span>
+              <span id="charCount" class="char-count">0 characters</span>
+            </div>
+          </div>
+          <button id="summarizeBtn" class="summarize-button">
+            <i class="fas fa-magic"></i> Summarize
+          </button>
+        </div>
+        <div id="inputError" class="error-message"></div>
+      </div>
+
+      <!-- Output Section -->
+      <div class="output-section">
+        <div class="output-header">
+          <h2 class="output-title"><i class="fas fa-file-alt"></i> Summary</h2>
+          <div id="summaryStatus" class="status-message"></div>
+        </div>
+        <div id="summaryOutput" class="summary-output">
+          <p class="placeholder">Summary will appear here...</p>
+        </div>
+        <div class="output-footer">
+          <button id="copyBtn" class="action-button" disabled>
+            <i class="fas fa-copy"></i> Copy
+          </button>
+          <button id="downloadBtn" class="action-button" disabled>
+            <i class="fas fa-download"></i> Download
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // DOM Elements
-        const inputText = document.getElementById('inputText');
-        const wordCount = document.getElementById('wordCount');
-        const charCount = document.getElementById('charCount');
-        const summarizeBtn = document.getElementById('summarizeBtn');
-        const summaryOutput = document.getElementById('summaryOutput');
-        const copyBtn = document.getElementById('copyBtn');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const inputError = document.getElementById('inputError');
-        const summaryStatus = document.getElementById('summaryStatus');
-        const pdfUpload = document.getElementById('pdfUpload');
-        const pdfInfo = document.getElementById('pdfInfo');
-        const inputTypeRadios = document.querySelectorAll('input[name="inputType"]');
-        const uploadSection = document.querySelector('.upload-section');
+  <script>
+    // DOM Elements
+    const inputText = document.getElementById('inputText');
+    const wordCount = document.getElementById('wordCount');
+    const charCount = document.getElementById('charCount');
+    const summarizeBtn = document.getElementById('summarizeBtn');
+    const summaryOutput = document.getElementById('summaryOutput');
+    const copyBtn = document.getElementById('copyBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const inputError = document.getElementById('inputError');
+    const summaryStatus = document.getElementById('summaryStatus');
+    const pdfUpload = document.getElementById('pdfUpload');
+    const pdfInfo = document.getElementById('pdfInfo');
+    const inputTypeRadios = document.querySelectorAll('input[name="inputType"]');
+    const uploadSection = document.querySelector('.upload-section');
+    const summaryLength = document.getElementById('summaryLength');
 
-        // Constants
-        const MIN_CHAR_LENGTH = 100;
-        const API_BASE_URL = "http://127.0.0.1:5000";
-        const API_SUMMARY_ENDPOINT = `${API_BASE_URL}/api/summarize`;
-        const API_PDF_TEXT_ENDPOINT = `${API_BASE_URL}/api/extract-text`;
+    // Constants
+    const MIN_CHAR_LENGTH = 100;
+    const API_BASE_URL = "https://summarizer.onrender.com";
+    const API_SUMMARY_ENDPOINT = `${API_BASE_URL}/api/summarize`;
+    const API_PDF_TEXT_ENDPOINT = `${API_BASE_URL}/api/extract-text`;
 
-        // Initialize
+    // Init
+    uploadSection.style.display = 'none';
+
+    // Event Listeners
+    inputTypeRadios.forEach(radio => radio.addEventListener('change', handleInputTypeChange));
+    inputText.addEventListener('input', updateCounters);
+    pdfUpload.addEventListener('change', handlePdfUpload);
+    summarizeBtn.addEventListener('click', handleSummarize);
+    copyBtn.addEventListener('click', copySummary);
+    downloadBtn.addEventListener('click', downloadSummary);
+
+    function handleInputTypeChange(e) {
+      if (e.target.value === 'pdf') {
+        inputText.style.display = 'none';
+        uploadSection.style.display = 'block';
+        inputText.value = '';
+        updateCounters();
+      } else {
+        inputText.style.display = 'block';
         uploadSection.style.display = 'none';
+        pdfUpload.value = '';
+        pdfInfo.textContent = '';
+      }
+    }
 
-        // Event Listeners
-        inputTypeRadios.forEach(radio => {
-            radio.addEventListener('change', handleInputTypeChange);
+    function updateCounters() {
+      const text = inputText.value.trim();
+      const words = text ? text.split(/\s+/).length : 0;
+      const chars = text.length;
+      wordCount.textContent = `${words} word${words !== 1 ? 's' : ''}`;
+      charCount.textContent = `${chars} character${chars !== 1 ? 's' : ''}`;
+      validateInput(text);
+    }
+
+    function validateInput(text) {
+      if (text.length > 0 && text.length < MIN_CHAR_LENGTH) {
+        inputError.textContent = `Minimum ${MIN_CHAR_LENGTH} characters required`;
+        summarizeBtn.disabled = true;
+      } else {
+        inputError.textContent = '';
+        summarizeBtn.disabled = false;
+      }
+    }
+
+    async function handlePdfUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (file.size > 10 * 1024 * 1024) return showPdfError('File exceeds 10MB');
+
+      showPdfLoading(file.name);
+      try {
+        const text = await extractTextFromPDF(file);
+        inputText.value = text;
+        updateCounters();
+        showPdfSuccess();
+      } catch (error) {
+        showPdfError(error.message);
+      }
+    }
+
+    async function extractTextFromPDF(file) {
+      const formData = new FormData();
+      formData.append('pdf', file);
+      const response = await fetch(API_PDF_TEXT_ENDPOINT, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Failed');
+      return data.text;
+    }
+
+    async function handleSummarize() {
+      const text = inputText.value.trim();
+      const length = summaryLength.value;
+      if (!text || text.length < MIN_CHAR_LENGTH) return;
+
+      try {
+        showLoadingState();
+        const response = await fetch(API_SUMMARY_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, length })
         });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Summarization failed');
+        showSummary(data.summary);
+      } catch (error) {
+        showSummaryError(error.message);
+      } finally {
+        hideLoadingState();
+      }
+    }
 
-        inputText.addEventListener('input', updateCounters);
-        pdfUpload.addEventListener('change', handlePdfUpload);
-        summarizeBtn.addEventListener('click', handleSummarize);
-        copyBtn.addEventListener('click', copySummary);
-        downloadBtn.addEventListener('click', downloadSummary);
+    function showLoadingState() {
+      summarizeBtn.disabled = true;
+      summaryStatus.innerHTML = `<i class="fas fa-spinner spinner"></i> Generating summary...`;
+      summaryOutput.innerHTML = '<p class="placeholder">Processing...</p>';
+    }
 
-        // Functions
-        function handleInputTypeChange(e) {
-            if (e.target.value === 'pdf') {
-                inputText.style.display = 'none';
-                uploadSection.style.display = 'block';
-                inputText.value = '';
-                updateCounters();
-            } else {
-                inputText.style.display = 'block';
-                uploadSection.style.display = 'none';
-                pdfUpload.value = '';
-                pdfInfo.textContent = '';
-            }
-        }
+    function hideLoadingState() {
+      summarizeBtn.disabled = false;
+      summaryStatus.textContent = '';
+    }
 
-        function updateCounters() {
-            const text = inputText.value.trim();
-            const words = text ? text.split(/\s+/).length : 0;
-            const chars = text.length;
-            
-            wordCount.textContent = `${words} word${words !== 1 ? 's' : ''}`;
-            charCount.textContent = `${chars} character${chars !== 1 ? 's' : ''}`;
-            
-            validateInput(text);
-        }
+    function showSummary(summary) {
+      summaryOutput.innerHTML = formatSummary(summary);
+      copyBtn.disabled = false;
+      downloadBtn.disabled = false;
+      summaryStatus.innerHTML = `<i class="fas fa-check-circle"></i> Summary generated`;
+    }
 
-        function validateInput(text) {
-            if (text.length > 0 && text.length < MIN_CHAR_LENGTH) {
-                inputError.textContent = `Minimum ${MIN_CHAR_LENGTH} characters required`;
-                summarizeBtn.disabled = true;
-            } else {
-                inputError.textContent = '';
-                summarizeBtn.disabled = false;
-            }
-        }
+    function showSummaryError(message) {
+      summaryOutput.innerHTML = `<p class="error"><i class="fas fa-exclamation-triangle"></i> ${message}</p>`;
+      summaryStatus.innerHTML = `<i class="fas fa-times-circle"></i> Error generating summary`;
+    }
 
-        async function handlePdfUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+    function formatSummary(summary) {
+      if (!summary) return '<p class="placeholder">No summary generated</p>';
+      return summary
+        .split('\n')
+        .map(line => (line ? `<p>${line}</p>` : ''))
+        .join('');
+    }
 
-            if (file.size > 10 * 1024 * 1024) {
-                showPdfError('File size exceeds 10MB limit');
-                return;
-            }
+    function showPdfLoading(filename) {
+      pdfInfo.innerHTML = `<span class="loading"><i class="fas fa-spinner"></i> Processing ${filename}...</span>`;
+      summarizeBtn.disabled = true;
+    }
 
-            showPdfLoading(file.name);
-            
-            try {
-                const text = await extractTextFromPDF(file);
-                inputText.value = text;
-                updateCounters();
-                showPdfSuccess();
-            } catch (error) {
-                showPdfError(error.message);
-            }
-        }
+    function showPdfSuccess() {
+      pdfInfo.innerHTML = `<span class="success"><i class="fas fa-check-circle"></i> PDF ready</span>`;
+      summarizeBtn.disabled = false;
+    }
 
-        async function extractTextFromPDF(file) {
-            const formData = new FormData();
-            formData.append('pdf', file);
-            
-            const response = await fetch(API_PDF_TEXT_ENDPOINT, {
-                method: 'POST',
-                body: formData
-            });
+    function showPdfError(message) {
+      pdfInfo.innerHTML = `<span class="error"><i class="fas fa-exclamation-circle"></i> ${message}</span>`;
+      summarizeBtn.disabled = true;
+    }
 
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error || 'PDF extraction failed');
-            
-            return data.text;
-        }
+    function copySummary() {
+      navigator.clipboard.writeText(summaryOutput.innerText)
+        .then(() => showToast('Summary copied!'))
+        .catch(() => showToast('Copy failed', true));
+    }
 
-        async function handleSummarize() {
-            const text = inputText.value.trim();
-            if (!text || text.length < MIN_CHAR_LENGTH) return;
+    function downloadSummary() {
+      const text = summaryOutput.innerText;
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'summary.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
 
-            try {
-                showLoadingState();
-                const response = await fetch(API_SUMMARY_ENDPOINT, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text })
-                });
-
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.error || 'Summarization failed');
-
-                showSummary(data.summary);
-            } catch (error) {
-                showSummaryError(error.message);
-            } finally {
-                hideLoadingState();
-            }
-        }
-
-        function showLoadingState() {
-            summarizeBtn.disabled = true;
-            summaryStatus.innerHTML = `
-                <i class="fas fa-spinner spinner"></i>
-                Generating summary...
-            `;
-            summaryOutput.innerHTML = '<p class="placeholder">Processing...</p>';
-        }
-
-        function hideLoadingState() {
-            summarizeBtn.disabled = false;
-            summaryStatus.textContent = '';
-        }
-
-        function showSummary(summary) {
-            summaryOutput.innerHTML = formatSummary(summary);
-            copyBtn.disabled = false;
-            downloadBtn.disabled = false;
-            summaryStatus.innerHTML = `
-                <i class="fas fa-check-circle" style="color: var(--success)"></i>
-                Summary generated
-            `;
-        }
-
-        function showSummaryError(message) {
-            summaryOutput.innerHTML = `
-                <p class="error">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    ${message}
-                </p>
-            `;
-            summaryStatus.innerHTML = `
-                <i class="fas fa-times-circle" style="color: var(--error)"></i>
-                Error generating summary
-            `;
-        }
-
-        function formatSummary(summary) {
-            if (!summary) return '<p class="placeholder">No summary generated</p>';
-            return summary
-                .split('\n')
-                .map(line => {
-                    if (line.startsWith('**')) {
-                        return `<h4>${line.replace(/\*\*/g, '')}</h4>`;
-                    }
-                    return line ? `<p>${line}</p>` : '';
-                })
-                .join('');
-        }
-
-        function showPdfLoading(filename) {
-            pdfInfo.innerHTML = `
-                <span class="loading">
-                    <i class="fas fa-spinner spinner"></i>
-                    Processing ${filename}...
-                </span>
-            `;
-            summarizeBtn.disabled = true;
-        }
-
-        function showPdfSuccess() {
-            pdfInfo.innerHTML = `
-                <span class="success">
-                    <i class="fas fa-check-circle"></i>
-                    PDF ready for summarization
-                </span>
-            `;
-            summarizeBtn.disabled = false;
-        }
-
-        function showPdfError(message) {
-            pdfInfo.innerHTML = `
-                <span class="error">
-                    <i class="fas fa-exclamation-circle"></i>
-                    ${message}
-                </span>
-            `;
-            summarizeBtn.disabled = true;
-        }
-
-        function copySummary() {
-            navigator.clipboard.writeText(summaryOutput.innerText)
-                .then(() => {
-                    showToast('Summary copied to clipboard!');
-                })
-                .catch(err => {
-                    showToast('Failed to copy summary', true);
-                });
-        }
-
-        function downloadSummary() {
-            const text = summaryOutput.innerText;
-            const blob = new Blob([text], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'research-summary.txt';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function showToast(message, isError = false) {
-            const toast = document.createElement('div');
-            toast.className = `toast ${isError ? 'error' : 'success'}`;
-            toast.innerHTML = `
-                <i class="fas ${isError ? 'fa-times-circle' : 'fa-check-circle'}"></i>
-                ${message}
-            `;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-    </script>
+    function showToast(message, isError = false) {
+      const toast = document.createElement('div');
+      toast.className = `toast ${isError ? 'error' : 'success'}`;
+      toast.innerHTML = `<i class="fas ${isError ? 'fa-times-circle' : 'fa-check-circle'}"></i> ${message}`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+  </script>
 </body>
 </html>
