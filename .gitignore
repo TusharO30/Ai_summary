@@ -1,6 +1,6 @@
+.env
 __pycache__/
 *.pyc
-.env
 *.pdf
 venv/
 *.DS_Store
