@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AI Research Paper Summarizer</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
-  <style>   
-* {
+  <style>
+    /* ... (keep all your previous CSS unchanged here) ... */
+     /* ... (keep all your previous CSS unchanged here) ... */
+ * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -316,6 +318,8 @@ body {
         padding: 6px 10px;
         font-size: 0.95rem;
     }
+    
+    /* Custom style for dropdown */
     #summaryLength {
         margin-right: 10px;
         background: #fff;
@@ -412,7 +416,7 @@ body {
 
     // Constants
     const MIN_CHAR_LENGTH = 100;
-    const API_BASE_URL = "https://ai-summary-8.onrender.com";
+    const API_BASE_URL = "http://127.0.0.1:5000";
     const API_SUMMARY_ENDPOINT = `${API_BASE_URL}/api/summarize`;
     const API_PDF_TEXT_ENDPOINT = `${API_BASE_URL}/api/extract-text`;
 
