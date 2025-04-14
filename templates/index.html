@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AI Research Paper Summarizer</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
-  <style>
-    
+  <style>   
 * {
     margin: 0;
     padding: 0;
@@ -317,6 +316,16 @@ body {
         padding: 6px 10px;
         font-size: 0.95rem;
     }
+    #summaryLength {
+        margin-right: 10px;
+        background: #fff;
+        color: #1e293b;
+        font-weight: 500;
+        border: 1px solid #93c5fd;
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-size: 0.95rem;
+    }
   </style>
 </head>
 <body>
@@ -403,11 +412,9 @@ body {
 
     // Constants
     const MIN_CHAR_LENGTH = 100;
-    const API_BASE_URL = "https://ai-summary-8.onrender.com";
-    const API_SUMMARY_ENDPOINT = `/api/summarize`;
-    const API_PDF_TEXT_ENDPOINT = `/api/extract-text`;
-    const API_PDF_IMAGES_ENDPOINT = `/api/extract-images`;
-
+    const API_BASE_URL = "http://127.0.0.1:5000";
+    const API_SUMMARY_ENDPOINT = `${API_BASE_URL}/api/summarize`;
+    const API_PDF_TEXT_ENDPOINT = `${API_BASE_URL}/api/extract-text`;
 
     // Init
     uploadSection.style.display = 'none';
