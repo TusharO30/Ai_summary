@@ -22,7 +22,7 @@ model = genai.GenerativeModel('gemini-1.5-pro')
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("index")
 
 @app.route("/check-auth")
 def check_auth():
