@@ -1,14 +1,13 @@
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import fitz  # PyMuPDF
+import pytesseract
 from PIL import Image
 import base64
 import io
 import google.generativeai as genai
 import os
 from dotenv import load_dotenv
-import pytesseract
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 load_dotenv()
 app = Flask(__name__)
@@ -121,5 +120,4 @@ def summarize():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=5000)
